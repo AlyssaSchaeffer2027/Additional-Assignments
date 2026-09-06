@@ -1,0 +1,185 @@
+---
+title: "Oat Dataset and Bacteria Dataset Complete Data Exploration"
+author: "Alyssa Schaeffer"
+date: "2026-09-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+#oat.csv
+library(readr)
+oat <- read_csv("oat.csv")
+Rows: 20 Columns: 2                                                                       
+── Column specification ────────────────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (2): grain, yield
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+View(oat)
+
+#1) During an oat harvest, the number of grains in each ear of oat harvested 
+#affects the total yield of cereals.
+
+#2) There are two variables, grain and yield, and both are composed of numerical 
+#data. For both, the numerical data is composed of continuous data.
+
+#3) The response variable (dependent variable) is the yield. The focal predictor
+#(independent variable) is grain. I don't believe there are any covarieties in 
+#this dataset.
+
+#4) To print the tables directly into the console, I entered the name of the 
+#dataset:
+
+oat
+# A tibble: 20 × 2
+    grain yield
+    <dbl> <dbl>
+ 1   18.1  4.91
+ 2   23.0  5.17
+ 3   28.9  5.82
+ 4   27.0  5.82
+ 5   17.8  5.05
+ 6   18.5  5.23
+ 7   20.3  5.31
+ 8   25.6  5.86
+ 9   25.1  5.36
+10   20.2  5.2 
+11   21.4  5.38
+12   25.8  5.76
+13   22.3  5.04
+14   24.6  5.47
+15   23.3  5.29
+16  2528   5.42
+17   22.6  5.29
+18   19.4  5.07
+19   25.9  5.64
+20   23.7  5.55
+
+#Column "grain" displays all 20 data recorded under grain. Column "yield"
+#displays all 20 data recorded under yield.
+
+#5)
+#Dot Charts:
+dotchart(oat$grain, xlab = "Grain")
+dotchart(oat$yield, xlab = "Yield")
+
+#Boxplots:
+boxplot(oat$grain, xlab = "Grain")
+boxplot(oat$yield, xlab = "Yield")
+
+#Histograms:
+hist(oat$grain, xlab = "Grain")
+hist(oat$yield, xlab = "Yield")
+
+#6)
+#Scatterplot:
+plot(oat$grain,oat$yield, xlab = "Grain", ylab = "Yield")
+
+#Almost all of the data plots in a nearly perfect vertical line. That is because
+#most of the grain values fall within the range of 17.76-28.94, well below 500.
+#However, there is a single outlier, plotted to the far right of the graph. This
+#point represents a value of 2,528.00, the outlier in the data collected
+#under "grain". This single outlier unbalances the data.
+
+#bacteria.csv
+library(readr)
+bacteria <- read_csv("bacteria.csv")
+Rows: 80 Columns: 3                                                                       
+── Column specification ────────────────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): species, diagnosis
+dbl (1): toxin
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+View(bacteria)
+
+#1) The appearance of carcinoma, the most common type of cancer, may be related
+#to specific pathogenic bacteria discovered within the bodies of inflicted
+#patients.
+
+#2) There are three variables, species, diagnosis, and toxin, in this dataset.
+#The variables species and diagnosis, are both categorical data. However,
+#the variable species is ordinal because it has an alphabetical ordered ranking,
+#while the variable diagnosis is nominal because it has no mathematical or 
+#alphabetical ranking. The variable toxin is composed of continuous numerical 
+#data.
+
+#3) The response variable (dependent variable) is the toxin. The focal 
+#predictor (independent variable) is the species. The diagnosis appears to be
+#independent of the species and toxin, so it is an independent variable that
+#is not being directly tested, but may have an impact on the collected data,
+#making it a covariety.
+
+#4) To print the tables directly into the console, I entered the name of the 
+#dataset:
+
+bacteria
+# A tibble: 80 × 3
+   species diagnosis      toxin
+   <chr>   <chr>          <dbl>
+ 1 bacterA carc.intestine  1.74
+ 2 bacterA carc.intestine  2.08
+ 3 bacterA carc.intestine  1.65
+ 4 bacterA carc.intestine  1.91
+ 5 bacterA carc.intestine  2.16
+ 6 bacterB carc.intestine  1.32
+ 7 bacterB carc.intestine  1.44
+ 8 bacterB carc.intestine  1.49
+ 9 bacterB carc.intestine  1.43
+10 bacterB carc.intestine  1.29
+# ℹ 70 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+#Since there are a lot of rows in this dataset, I will not print the entirety of
+#it here. You can see that column "species" lists the species of bacteria,
+#"diagnosis" lists the diagnoses, and "toxin" lists the numeric levels of toxin
+#found within the patients' bodies.
+
+#5)
+#Dot Chart:
+dotchart(bacteria$toxin, xlab = "Toxin")
+
+#Boxplot:
+boxplot(bacteria$toxin, xlab = "Toxin")
+
+#Histogram:
+hist(bacteria$toxin, xlab = "Toxin")
+
+#6)
+#Scatterplot:
+interaction.plot(x.factor = bacteria$species,trace.factor = bacteria$diagnosis,response = bacteria$toxin, type = "p", col = 1:4, pch = 1:4, xlab = "Species", ylab = "Toxin Amount", trace.label = "Diagnosis", legend = F)
+legend("top", title = "Diagnosis", leg.txt <- c("appendicitis","carc.intestine","carc.rectum","skin.abscess"), col=1:4, pch=1:4)
+
+#Plotting the mean of the toxin amount in relation to the bacteria species and 
+#diagnosis reveals a potential association. Diagnosis of appendicitis and skin
+#abscesses are often much lower in toxin amount across bacteria species than 
+#their carc.intestine and car.rectum counterparts. This difference in toxin 
+#amount is apparently clear in bacteria A and bacteria D. Overall, I would say 
+#the data is balanced, with general trends -- carc.intestine and car.rectum 
+#having greater toxin amounts; appendicitis and skin abscess having lower toxin 
+#amounts -- seen across the graph.
