@@ -1,0 +1,74 @@
+---
+title: 'COOL OR QUALITY: CAR BRAND AND PARKING PERMITS AT ADELPHI'
+author: "Alyssa Schaeffer"
+date: "2026-09-19"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+> library(readr)
+> brandmeancost <- read_csv("brandmeancost.csv")
+Rows: 21 Columns: 2                                                                       
+── Column specification ────────────────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): Brand
+num (1): Mean Cost (Numerical)
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> View(brandmeancost)
+
+> summary(brandmeancost)
+    Brand           Mean Cost (Numerical)
+ Length:21          Min.   :22700        
+ Class :character   1st Qu.:37300        
+ Mode  :character   Median :41000        
+                    Mean   :46590        
+                    3rd Qu.:59500        
+                    Max.   :72600  
+
+#First, I am going to plot a bar chart of mean cost dependent on brand. The response variable (dependent variable) is the mean cost (numeric, continuous). The focal predictor (independent variable) is the brand (categorical).
+
+#Bar charts are plotted as a "barplot," and I need to create a barplot between a numerical and categorical column.
+
+#Making the basic barplot:
+> ggplot(brandmeancost, aes(x = brandmeancost$Brand, y = brandmeancost$`Mean Cost (Numerical)`))+geom_col(fill = "skyblue")   #Not good
+> barplot(height = brandmeancost$`Mean Cost (Numerical)`, names = brandmeancost$Brand, col = 'skyblue')   #very good
+
+#Improving the barplot:
+> barplot(height = brandmeancost$`Mean Cost (Numerical)`, names = brandmeancost$Brand, col = 'skyblue', main = 'Mean Cost of Sampled Brands')   #Adds a title
+> barplot(height = brandmeancost$`Mean Cost (Numerical)`, names = brandmeancost$Brand, col = 'skyblue', main = 'Mean Cost of Sampled Brands', las = 2)   #las argument changes the
+                                                               orientation of the axis
+                                                               labels: 0 = parallel to the
+                                                               axis (default), 1 = 
+                                                               horizontal to axis, 2 =
+                                                               perpendicular to axis 
+                                                               (what I did), 3 = vertical 
+                                                               to the axis
+
+#The best R graph tutorial website I found: https://r-graph-gallery.com/ I used this website to help improve my barplot, and it is great for a variety of other graph styles.
