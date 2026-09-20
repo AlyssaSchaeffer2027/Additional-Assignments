@@ -1,0 +1,18 @@
+---
+title: "Wheat2 Three-Way Interaction Graph"
+author: "Alyssa Schaeffer"
+date: "2026-09-05"
+output:
+  word_document: default
+  html_document: default
+---
+
+wheat <- read.csv("wheat2.csv")
+
+interaction.plot(x.factor = wheat$sowrate, trace.factor = wheat$variety, response = wheat$yield, fun = mean, type = "p", col=1:2, pch=1:2, xlab = "Sow Rate", ylab = "Yield of Wheat", main = "Yield as a function of Variety and Sow Rate", trace.label = "species", legend = FALSE)
+
+legend("topleft", title = "Variety", leg.txt <- c("1","2"), col = 1:2, pch = 1:2)
+
+interaction.plot(x.factor = wheat$sowrate, trace.factor = wheat$variety, response = wheat$yield, fun = mean, type = "b", col=1:2, pch=1:2, xlab = "Sow Rate", ylab = "Yield of Wheat", main = "Yield as a function of Variety and Sow Rate", trace.label = "species", legend = FALSE)
+
+legend("topleft", title = "Variety", leg.txt <- c("1","2"), col = 1:2, pch = 1:2)
