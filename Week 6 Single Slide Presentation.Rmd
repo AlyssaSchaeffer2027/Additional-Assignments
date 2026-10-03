@@ -1,0 +1,149 @@
+---
+title: "Week 6 Single Slide Presentation"
+author: "Alyssa Schaeffer"
+date: "2026-10-02"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+#Using the Isolation dataset
+> library(readr)
+> Isolation <- read_csv("Isolation.csv")
+Rows: 50 Columns: 3                                                                       
+── Column specification ────────────────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (3): incidence, area, isolation
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> View(Isolation)
+> summary(Isolation)
+   incidence         area         isolation         #"incidence" is only composed of 0 and
+ Min.   :0.00   Min.   :0.153   Min.   :2.023         1. 0 = no breeding. 1 = bird
+ 1st Qu.:0.00   1st Qu.:2.248   1st Qu.:4.823         presence. 
+ Median :1.00   Median :4.170   Median :5.801  
+ Mean   :0.58   Mean   :4.319   Mean   :5.856  
+ 3rd Qu.:1.00   3rd Qu.:6.431   3rd Qu.:7.191  
+ Max.   :1.00   Max.   :9.269   Max.   :9.577  
+ 
+#This dataset tests if the presence of bird species on given islands is affected by the area of the island or the isolation of the islands (how far each is from the mainland). The predictor (independent) variables are "area" and "isolation" while the response (dependent) variable is "incidence." 
+
+#All variables:
+incidence (dependent)
+area (independent)
+isolation (independent)
+
+#Modeling just the intercept:
+> mod_intercept <- lm(Isolation$incidence~1)
+
+#Modeling combinations of the two predictors:
+> mod1 <- lm(Isolation$incidence~Isolation$area, data = Isolation)
+> mod2 <- lm(Isolation$incidence~Isolation$isolation, data = Isolation)
+> mod3 <- lm(Isolation$incidence~Isolation$area*Isolation$isolation, data = Isolation)
+> mod4 <- lm(Isolation$incidence~Isolation$area+Isolation$isolation, data = Isolation)
+
+#First load the package AICcmodavg
+> library(AICcmodavg)
+
+#AICc:
+> AICc(mod_intercept)
+[1] 75.53779
+
+> AICc(mod1)
+[1] 59.49274
+
+> AICc(mod2)
+[1] 45.55016
+
+> AICc(mod3)      #This has the lowest AICc!
+[1] 38.92573
+
+> AICc(mod4)
+[1] 39.21524
+
+#Calculate delta AICC:
+#Delta AICC is calculated as the difference between the current model and the AICc model with the minimum value.
+> AICc(mod_intercept) - AICc(mod3)
+[1] 36.61206
+
+> AICc(mod1) - AICc(mod3)
+[1] 20.56701
+
+> AICc(mod2) - AICc(mod3)
+[1] 6.624427
+
+> AICc(mod3) - AICc(mod3)
+[1] 0
+
+> AICc(mod4) - AICc(mod3)
+[1] 0.2895125
+
+#mod3 <- lm(Isolation$incidence~Isolation$area*Isolation$isolation, data = Isolation)
+#Checks the correlation of the incidence (dependent) to the multiplication of the area (independent) and the isolation (independent)
+
+> summary(mod3)
+
+Call:
+lm(formula = Isolation$incidence ~ Isolation$area * Isolation$isolation, 
+    data = Isolation)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.65053 -0.19053 -0.02984  0.22985  0.80616 
+
+Coefficients:
+                                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                         1.58058    0.37054   4.266 9.82e-05 ***
+Isolation$area                     -0.03883    0.06696  -0.580  0.56483    
+Isolation$isolation                -0.21648    0.05715  -3.788  0.00044 *** #Significant!
+Isolation$area:Isolation$isolation  0.01878    0.01161   1.617  0.11271    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.3323 on 46 degrees of freedom
+Multiple R-squared:  0.5829,	Adjusted R-squared:  0.5557 
+F-statistic: 21.43 on 3 and 46 DF,  p-value: 7.855e-09
+#From summary(mod3), isolation on its own is significant, however area and the interaction of the two predictors -- area and isolation -- are not significant. 
+
+#mod4 <- lm(Isolation$incidence~Isolation$area+Isolation$isolation, data = Isolation)
+#Checks the correlation of the incidence (dependent) to the sum of the area (independent) and the isolation (independent) 
+
+> summary(mod4)
+
+Call:
+lm(formula = Isolation$incidence ~ Isolation$area + Isolation$isolation, 
+    data = Isolation)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.6048 -0.2119 -0.0697  0.2453  0.7606 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)          1.08626    0.21296   5.101 5.98e-06 *** 
+Isolation$area       0.06396    0.02140   2.989  0.00444 **     #Significant!
+Isolation$isolation -0.13362    0.02575  -5.189 4.43e-06 ***      #Significant!
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.338 on 47 degrees of freedom
+Multiple R-squared:  0.5592,	Adjusted R-squared:  0.5404 
+F-statistic: 29.81 on 2 and 47 DF,  p-value: 4.366e-09
+#From summary(mod4), area on its own and isolation on its own are each significant.
+
+#Simple scatter plots (result in the exact same graphs):
+> plot(incidence~area*isolation, data = Isolation, pch = 16)
+> plot(incidence~area+isolation, data = Isolation, pch = 16)
+
+#The best model is mod3 <- lm(Isolation$incidence~Isolation$area*Isolation$isolation, data = Isolation), followed by mod4 <- lm(Isolation$incidence~Isolation$area+Isolation$isolation, data = Isolation). These two models have the lowest values as an AICc and when calculated as a delta AICC.
+
+#From my analysis, I have determined that both "area" and "isolation" can be significant when determining the presence of bird species on an island in this dataset. Which predictor variable, or both, are significant depends on the model run.  
